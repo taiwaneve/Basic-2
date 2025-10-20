@@ -31,6 +31,7 @@ import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,6 +76,16 @@ fun MainContent(modifier: Modifier = Modifier) {
     )
     var mper: MediaPlayer? by remember { mutableStateOf(null) }
     LocalContext.current
+    // 使用 DisposableEffect 來管理 MediaPlayer 的生命週期
+    // 當 Main Composable 離開組合時，會執行 onDispose 區塊
+    DisposableEffect(Unit) { // Unit 作為 key 表示這個 effect 只會執行一次
+        onDispose {
+            // 釋放 MediaPlayer 資源，避免記憶體洩漏
+            mper?.release()
+            mper = null
+        }
+    }
+
 
     // 修復 AnimalsName 缺少的部分
     val AnimalsName: List<String> = listOf(
@@ -82,7 +93,6 @@ fun MainContent(modifier: Modifier = Modifier) {
         "青蛙3.", "貓頭鷹4.", "海豚5.", "牛6.", "無尾熊7.", "獅子8.", "狐狸9.", "小雞10."
     )
 
-    val context = LocalContext.current
 
 
     Column(
@@ -151,11 +161,37 @@ fun MainContent(modifier: Modifier = Modifier) {
                 )
             }
         }
+        // 在 MainContent 裡面加入這段
+        var isImageToggled by remember { mutableStateOf(false) }
+
+
+        var showTestText by remember { mutableStateOf(false) }
+
+        Button(
+            onClick = { showTestText = true },
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(0.5f),
+            colors = buttonColors(containerColor = Color.Magenta)
+        ) {
+            Text(text = "測試按鈕", color = Color.White)
+        }
+
+        if (showTestText) {
+            Text(
+                text = "test",
+                fontSize = 20.sp,
+                color = Color.Black,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.size(10.dp))
         Row{
             Button(onClick = {
                 mper?.release()  //釋放資源
                 mper = null // 清除舊引用
+                val context = null
                 mper = MediaPlayer.create(context, R.raw.tcyang) //設定音樂
                 mper?.start()  } , //開始播放
                 modifier = Modifier
@@ -176,6 +212,7 @@ fun MainContent(modifier: Modifier = Modifier) {
                 onClick = {
                     mper?.release()  //釋放資源
                     mper = null // 清除舊引用
+                    val context = null
                     mper = MediaPlayer.create(context, R.raw.fly) //設定音樂
                     mper?.start()  },  //開始播放
                 modifier = Modifier
@@ -194,6 +231,7 @@ fun MainContent(modifier: Modifier = Modifier) {
 
             Button(onClick = {
                 // 將 Context 安全地轉換(as?)為 Activity，並儲存到變數中
+                val context = null
                 val activity = context as? Activity
                 // 如果成功轉換為 Activity，則呼叫 finish()
                 activity?.finish() },
@@ -211,6 +249,27 @@ fun MainContent(modifier: Modifier = Modifier) {
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 10.dp)
         ) {
                 Text(text = "結束App")
+            }
+
+            Spacer(modifier = Modifier.size(20.dp))
+
+            val imageList = listOf(R.drawable.animal0, R.drawable.animal2)
+            var currentImage by remember { mutableStateOf(imageList[0]) }
+
+            Spacer(modifier = Modifier.size(20.dp))
+
+            Button(
+                onClick = { currentImage = if (currentImage == imageList[0]) imageList[1] else imageList[0] },
+                modifier = Modifier
+                    .fillMaxWidth(0.8f) // 長條狀寬度
+                    .padding(8.dp),
+                colors = buttonColors(containerColor = Color(0xFF6200EE)) // 紫色背景
+            ) {
+                Text(
+                    text = "按鈕",
+                    fontSize = 20.sp,
+                    color = Color.White
+                )
             }
         }
 
