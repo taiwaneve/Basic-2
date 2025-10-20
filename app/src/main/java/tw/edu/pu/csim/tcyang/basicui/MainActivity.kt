@@ -70,20 +70,11 @@ fun MainContent(modifier: Modifier = Modifier) {
 
     // 修復 AnimalsName 缺少的部分
     val AnimalsName: List<String> = listOf(
-        "鴨子", "企鵝",
-        "青蛙", "貓頭鷹", "海豚", "牛", "無尾熊", "獅子", "狐狸", "小雞"
+        "鴨子1.", "企鵝2.",
+        "青蛙3.", "貓頭鷹4.", "海豚5.", "牛6.", "無尾熊7.", "獅子8.", "狐狸9.", "小雞10"
     )
 
     val context = LocalContext.current
-
-    // 【新增】定義機器人圖片資源
-    // 請確保您的 res/drawable 資料夾中有 robot01 到 robot05 圖片
-    val Robots = listOf(
-        R.drawable.robot01, R.drawable.robot02,
-        R.drawable.robot03, R.drawable.robot04,
-        R.drawable.robot05
-    )
-    val robotCount = Robots.size
 
 
     Column(
@@ -140,6 +131,7 @@ fun MainContent(modifier: Modifier = Modifier) {
             )
         }
 
+
         // 您原有的 LazyRow (動物圖片)
         LazyRow {
             items(50) { index ->
@@ -151,71 +143,34 @@ fun MainContent(modifier: Modifier = Modifier) {
                 )
             }
         }
+        Spacer(modifier = Modifier.size(10.dp))
+        Row{
+            Button(onClick = {
+            }) {
+                Text(text = "歡迎修課")
+            }
 
+            Spacer(modifier = Modifier.size(10.dp))
 
-        // 新增的 Spacer 以區隔動物和機器人列表
-        Spacer(modifier = Modifier.size(20.dp))
-        Text(
-            text = "🤖 機器人垂直列表 (0-19) 🤖",
-            fontSize = 22.sp,
-            color = Color.Red,
-            modifier = Modifier.padding(bottom = 10.dp)
-        )
+            Button(onClick = {
+            }) {
+                Text(text = "展翅飛翔")
+            }
 
-        // 【新增】垂直顯示 20 個機器人項目 (0..19)
-        // 使用 LazyColumn 實現高效能垂直滾動
-        LazyColumn(
-            // 讓它佔滿剩餘空間
-            modifier = Modifier
-                .fillMaxSize()
-                // 【修改點 1】移除 .background(Color.White)，讓背景繼承 LightPurple
-                .padding(horizontal = 8.dp),
+            Spacer(modifier = Modifier.size(10.dp))
 
-            // 設定 LazyColumn 內的內容水平置中
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            items(count = 20) { index ->
-                // 使用取餘數 (%) 讓 5 張機器人圖片循環顯示
-                val currentRobotResId = Robots[index % robotCount]
-
-                RobotItem(
-                    index = index,
-                    imageResId = currentRobotResId
-                )
+            Button(onClick = {
+            }) {
+                Text(text = "結束App")
             }
         }
-    }
-}
 
-// 【修改點 2】將 Row 改為 Column 並設置水平置中
-@Composable
-fun RobotItem(
-    index: Int,
-    imageResId: Int,
-    modifier: Modifier = Modifier
-) {
-    Column( // 將 Row 改為 Column
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally // 設定水平置中
-    ) {
-        // 顯示編號 (0..19)
-        Text(
-            text = "編號 $index:",
-            fontSize = 20.sp,
-            color = Color.Black,
-            modifier = Modifier.padding(bottom = 8.dp) // 調整間距
-        )
-        // 顯示循環的機器人圖片
-        Image(
-            painter = painterResource(id = imageResId),
-            contentDescription = "機器人圖片",
-            modifier = Modifier.size(80.dp)
-        )
-    }
-}
 
+
+
+
+    }
+        }
 // 您原有的其他 Composable 保持不變 (但不需要放在 MainContent 內部)
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
